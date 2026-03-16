@@ -1,4 +1,3 @@
-.github/workflows/android.yml
 name: Build APK
 
 on:
@@ -24,7 +23,7 @@ jobs:
 
       - name: Build APK
         run: |
-          cd metacriticapp
+          cd MetacriticApp
           chmod +x gradlew
           ./gradlew assembleDebug
 
