@@ -25,7 +25,7 @@ jobs:
           mkdir -p app/src/main/java/com/example/metacriticapp
           mkdir -p app/src/main/res/values
 
-          # 1. settings.gradle.kts
+          # settings.gradle.kts
           cat << 'EOF' > settings.gradle.kts
           pluginManagement {
               repositories {
@@ -45,15 +45,15 @@ jobs:
           include(":app")
           EOF
 
-          # 2. Root build.gradle.kts
+          # Root build.gradle.kts
           cat << 'EOF' > build.gradle.kts
           plugins {
               id("com.android.application") version "8.2.2" apply false
-              id("org.jetbrains.kotlin.android") version "1.9.22" apply false
+              id("org.jetbrains.kotlin.android") version "1.9.24" apply false
           }
           EOF
 
-          # 3. App build.gradle.kts
+          # App build.gradle.kts
           cat << 'EOF' > app/build.gradle.kts
           plugins {
               id("com.android.application")
@@ -76,15 +76,17 @@ jobs:
                   compose = true
               }
               composeOptions {
-                  kotlinCompilerExtensionVersion = "1.5.8"
+                  kotlinCompilerExtensionVersion = "1.5.15"
               }
           }
 
           dependencies {
-              implementation("androidx.core:core-ktx:1.12.0")
-              implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-              implementation("androidx.activity:activity-compose:1.8.2")
-              implementation(platform("androidx.compose:compose-bom:2024.02.00"))
+              implementation("androidx.core:core-ktx:1.13.1")
+              implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
+              implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
+              implementation("androidx.activity:activity-compose:1.9.1")
+              
+              implementation(platform("androidx.compose:compose-bom:2024.09.00"))
               implementation("androidx.compose.ui:ui")
               implementation("androidx.compose.ui:ui-graphics")
               implementation("androidx.compose.material3:material3")
@@ -97,7 +99,7 @@ jobs:
           }
           EOF
 
-          # 4. AndroidManifest.xml
+          # AndroidManifest.xml
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -133,6 +135,7 @@ jobs:
           import androidx.compose.animation.SharedTransitionScope
           import androidx.compose.foundation.background
           import androidx.compose.foundation.clickable
+          import androidx.compose.foundation.isSystemInDarkTheme
           import androidx.compose.foundation.layout.*
           import androidx.compose.foundation.lazy.LazyColumn
           import androidx.compose.foundation.lazy.items
@@ -215,7 +218,12 @@ jobs:
               override fun onCreate(savedInstanceState: Bundle?) {
                   super.onCreate(savedInstanceState)
                   setContent {
-                      MaterialTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MetacriticApp() } }
+                      val colors = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+                      MaterialTheme(colorScheme = colors) { 
+                          Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { 
+                              MetacriticApp() 
+                          } 
+                      }
                   }
               }
           }
